@@ -1,25 +1,14 @@
-FROM lsiobase/alpine:3.11
+FROM ibm-semeru-runtimes:open-8-jre
+LABEL maintainer="Stille <stille@ioiox.com>"
 
-ARG ZFILE_VERSION=4.1.5
+ENV VERSION 4.1.5
 
-ENV PUID=1000
-ENV PGID=1000
-ENV TZ="Asia/Shanghai"
+WORKDIR /root
 
-LABEL MAINTAINER="Xavier Niu"
-
-RUN \
-    echo ">>>>>> update dependencies <<<<<<" \
-    && apk update && apk add tzdata openjdk8 \
-    && echo ">>>>>> set up timezone <<<<<<" \
-    && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
-    && echo ${TZ} > /etc/timezone \
-    && apk del tzdata \
-    && echo ">>>>>> get zfile from github <<<<<<" \
-    && wget -O zfile.jar https://github.com/zhaojun1998/zfile/releases/download/${ZFILE_VERSION}/zfile-${ZFILE_VERSION}.jar
-
-#VOLUME ["/zfile", "/root/.zfile-new"]
+RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+RUN echo 'Asia/Shanghai' >/etc/timezone
+RUN curl -L -o app.jar https://github.com/zfile-dev/zfile/releases/download/${VERSION}/zfile-${VERSION}.jar
 
 EXPOSE 8080
 
-ENTRYPOINT java -Xms10m -Xmx300m -Djava.security.egd=file:/dev/./urandom -jar zfile.jar
+ENTRYPOINT java $JAVA_OPTS -Xshareclasses -Xquickstart -jar /root/app.jar
