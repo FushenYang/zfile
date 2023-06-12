@@ -18,7 +18,7 @@ RUN \
     && echo ">>>>>> get zfile from github <<<<<<" \
     && wget -O zfile.jar https://github.com/zhaojun1998/zfile/releases/download/${ZFILE_VERSION}/zfile-${ZFILE_VERSION}.jar
 
-VOLUME ["/zfile", "/root/.zfile-new"]
+#VOLUME ["/zfile", "/root/.zfile-new"]
 
 EXPOSE 8080
 
